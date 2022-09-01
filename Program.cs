@@ -199,11 +199,34 @@ namespace NinetiesTV
         **************************************************************************************************/
 
         // 1. Return the genres of the shows that started in the 80s.
+        public static List<string> EightiesGenres(List<Show> shows)
+        {
+            return shows.Where(s => s.StartYear >= 1980 && s.StartYear < 1990).SelectMany(s => s.Genres).ToList();
+        }
         // 2. Print a unique list of geners.
+           public static List<string> AllGenres(List<Show> shows)
+        {
+            return shows.SelectMany(s => s.Genres).Distinct().ToList();
+        }
         // 3. Print the years 1987 - 2018 along with the number of shows that started in each year (note many years will have zero shows)
+           public static List<string> NumShowsFromRandomRange(List<Show> shows)
+        {
+            return Enumerable.Range(1987, (2018-1987 + 1)).Select(y => $"{y} - {shows.Where(s => s.StartYear == y).Count()}").ToList();
+        }
         // 4. Assume each episode of a comedy is 22 minutes long and each episode of a show that isn't a comedy is 42 minutes. How long would it take to watch every episode of each show?
+           public static List<string> BingeWatchEpisode (List<Show> shows)
+        {
+            return shows.Select(s => $"{s.Name} - {(s.Genres.Contains("Comedy") ? 22 : 42) * s.EpisodeCount}").ToList();
+        }
         // 5. Assume each show ran each year between its start and end years (which isn't true), which year had the highest average IMDB rating.
-
+             public static int HightestYearIMDB (List<Show> shows)
+        {
+            return shows
+            .SelectMany(s => Enumerable.Range(s.StartYear, s.EndYear -s.StartYear + 1).Select(y => new {Year = y, Show = s}))
+            .GroupBy(showYear => showYear.Year)
+            .OrderByDescending(showYearGroup => showYearGroup.Average(showyear => showyear.Show.ImdbRating))
+            .First().Key;
+        }   
 
 
         /**************************************************************************************************
